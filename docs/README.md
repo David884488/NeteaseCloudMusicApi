@@ -272,6 +272,19 @@
 254. 回忆坐标
 255. 播客搜索
 256. 播客声音上传
+257. 验证接口-二维码生成
+258. 验证接口-二维码检测
+259. 听歌识曲
+260. 根据nickname获取userid接口
+261. 播客声音列表
+262. 专辑简要百科信息
+263. 歌曲简要百科信息
+264. 歌手简要百科信息
+265. mv简要百科信息
+266. 搜索歌手
+267. 用户贡献内容
+268. 用户贡献条目、积分、云贝数量
+269. 年度听歌报告
 
 ## 安装
 
@@ -4175,6 +4188,43 @@ type='1009' 获取其 id, 如`/search?keywords= 代码时间 &type=1009`
 
 `podcastName`: 播客名称
 
+### 播客声音列表
+
+说明: 可以获取播客里的声音
+
+**接口地址:** `/voicelist/list`
+
+**必选参数：**
+`voiceListId`: 播客id
+
+返回结果的`displayStatus`参数对应:
+
+```
+AUDITING 审核中
+ONLY_SELF_SEE 仅自己可见
+ONLINE 已发布
+```
+
+**可选参数：**
+`limit`: 取出歌单数量 , 默认为 200
+
+`offset`: 偏移数量 , 用于分页 , 如 :( 评论页数 -1)\*200, 其中 200 为 limit 的值
+
+### 播客声音详情
+
+说明: 获取播客里的声音详情
+
+**接口地址:** `/voice/detail`
+
+**必选参数：**
+`id`: 播客声音id(voiceId)
+
+返回结果的`displayStatus`参数对应:
+
+```
+同上
+```
+
 ### 播客上传声音
 说明: 可以上传声音到播客,例子在 `/public/voice_upload.html` 访问地址: <a href="/voice_upload.html" target="_blank">/voice_upload.html</a>
 
@@ -4207,7 +4257,164 @@ type='1009' 获取其 id, 如`/search?keywords= 代码时间 &type=1009`
 
 `composedSongs`: 包含歌曲(歌曲id),多个用逗号隔开
 
+### 验证接口-二维码生成
+说明: 进行某些操作,如关注用户,可能会触发验证,可调用这个接口生成二维码,使用app扫码后可解除验证  
 
+**接口地址:** `/verify/getQr`
+
+**必选参数：**   
+
+`vid`: 触发验证后,接口返回的verifyId  
+
+`type`:触发验证后,接口返回的verifyType  
+
+`token`:触发验证后,接口返回的verifyToken  
+
+`evid`:触发验证后,接口返回的params的event_id  
+
+`sign`:触发验证后,接口返回的params的sign
+
+### 验证接口-二维码检测
+说明: 使用此接口,传入`/verify/getQr`接口返回的`qr`字符串,可检测二维码扫描状态
+
+**接口地址:** `/verify/qrcodestatus`
+
+**必选参数：**   
+
+`qr`: `/verify/getQr`接口返回的`qr`字符串
+
+返回结果说明:
+
+qrCodeStatus:0,detailReason:0 二维码生成成功
+
+qrCodeStatus:0,detailReason:303 账号不一致
+
+qrCodeStatus:10,detailReason:0  二维码已扫描,并且手机号相同
+
+qrCodeStatus:20,detailReason:0  验证成功qrCodeStatus:21,detailReason:0 二维码已失效
+
+### 听歌识曲
+说明: 使用此接口,上传音频文件或者麦克风采集声音可识别对应歌曲信息,具体调用例子参考 `/audio_match_demo/index.html` (项目文件: `public/audio_match_demo/index.html`)
+
+**接口地址:** `/audio/match`
+
+**必选参数：**     
+
+`duration`: 音频时长,单位秒
+
+`audioFP`: 音频指纹,参考项目调用例子获取
+
+### 根据nickname获取userid
+说明: 使用此接口,传入用户昵称,可获取对应的用户id,支持批量获取,多个昵称用`分号(;)`隔开  
+
+**必选参数：**  
+
+`nicknames`: 用户昵称,多个用分号(;)隔开
+
+**接口地址:** `/get/userids`
+
+**调用例子:** `/get/userids?nicknames=binaryify` `/get/userids?nicknames=binaryify;binaryify2`
+
+### 专辑简要百科信息
+说明: 登录后调用此接口,使用此接口,传入专辑id,可获取对应的专辑简要百科信息
+
+**必选参数：**  
+
+`id`: 专辑id
+
+**接口地址:** `/ugc/album/get`
+
+**调用例子:** `/ugc/album/get?id=168223858`
+
+### 歌曲简要百科信息
+说明: 登录后调用此接口,使用此接口,传入歌曲id,可获取对应的歌曲简要百科信息
+
+**必选参数：**  
+
+`id`: 歌曲id
+
+**接口地址:** `/ugc/song/get`
+
+**调用例子:** `/ugc/song/get?id=2058263032`
+
+### 歌手简要百科信息
+说明: 登录后调用此接口,使用此接口,传入歌手id,可获取对应的歌手简要百科信息
+
+**必选参数：**  
+
+`id`: 歌手id
+
+**接口地址:** `/ugc/artist/get`
+
+**调用例子:** `/ugc/artist/get?id=15396`
+
+### mv简要百科信息
+说明: 登录后调用此接口,使用此接口,传入mv id,可获取对应的mv简要百科信息
+
+**必选参数：**  
+
+`id`: mv id
+
+**接口地址:** `/ugc/mv/get`
+
+**调用例子:** `/ugc/mv/get?id=14572641`
+
+### 搜索歌手
+说明: 登录后调用此接口,使用此接口,传入歌手名关键字或者歌手id,可获取搜索到的歌手信息
+
+**必选参数：**  
+
+`keyword`: 关键字或歌手id
+
+**可选参数：** 
+
+`limit`: 取出条目数量 , 默认为 40
+
+**接口地址:** `/ugc/artist/search`
+
+**调用例子:** `/ugc/artist/search?keyword=sasakure`
+
+### 用户贡献内容
+说明: 登录后调用此接口,使用此接口,可获取当前登录用户贡献内容
+
+**必选参数：**  
+
+`type`: 内容种类
+分为以下几种类型:
+曲库纠错 歌手:1 专辑:2 歌曲:3 MV:4 歌词:5 翻译:6
+曲库补充 专辑:101 MV:103
+
+**可选参数：** 
+`limit`: 取出条目数量 , 默认为 10
+
+`offset`: 偏移数量
+
+`auditStatus`: 审核状态
+待审核:0 未采纳:-5 审核中:1 部分审核通过:4 审核通过:5
+
+`order`: 排序,默认为降序 降序:desc 顺序:asc
+
+**接口地址:** `/ugc/detail`
+
+**调用例子:** `/ugc/detail`
+
+### 用户贡献条目、积分、云贝数量
+说明: 登录后调用此接口,使用此接口,可获取当前登录用户贡献条目、积分、云贝数量
+
+**接口地址:** `/ugc/user/devote`
+
+**调用例子:** `/ugc/user/devote`
+
+### 年度听歌报告
+说明: 登录后调用此接口,使用此接口,可获取当前登录用户年度听歌报告，目前支持2017-2022年的报告
+
+**必选参数：**  
+
+`year`: 报告年份
+
+**接口地址:** `/summary/annual`
+
+**调用例子:** `/summary/annual?year=2022`
 
 ## 离线访问此文档
 
